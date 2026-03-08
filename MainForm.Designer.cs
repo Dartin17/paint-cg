@@ -38,7 +38,7 @@
             panelDraw.Dock = DockStyle.Fill;
             panelDraw.Location = new Point(0, 0);
             panelDraw.Name = "panelDraw";
-            panelDraw.Size = new Size(800, 450);
+            panelDraw.Size = new Size(1350, 729);
             panelDraw.TabIndex = 1;
             panelDraw.Tag = "";
             panelDraw.MouseDown += panelDraw_MouseDown;
@@ -51,14 +51,14 @@
             panelSettings.Dock = DockStyle.Top;
             panelSettings.Location = new Point(0, 0);
             panelSettings.Name = "panelSettings";
-            panelSettings.Size = new Size(800, 60);
+            panelSettings.Size = new Size(1350, 100);
             panelSettings.TabIndex = 2;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(1350, 729);
             Controls.Add(panelSettings);
             Controls.Add(panelDraw);
             Name = "MainForm";

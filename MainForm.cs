@@ -14,8 +14,6 @@ namespace paint_cg
         {
             InitializeComponent();
             this.WindowState = FormWindowState.Maximized;
-
-
         }
 
 

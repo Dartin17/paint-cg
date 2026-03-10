@@ -3,6 +3,7 @@ namespace paint_cg
     public partial class MainForm : Form
     {
         bool isDrawing = false;
+        bool freeDrawMode = false;
         Point lastPoint;
         Bitmap canvas;
         Graphics g;
@@ -28,7 +29,7 @@ namespace paint_cg
         {
             if (panelDraw.Width > 0 && panelDraw.Height > 0)
             {
-                if(canvas == null)
+                if (canvas == null)
                 {
                     canvas = new Bitmap(panelDraw.Width, panelDraw.Height);
                     g = Graphics.FromImage(canvas);
@@ -59,10 +60,16 @@ namespace paint_cg
 
         private void panelDraw_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
+            if (freeDrawMode)
             {
-                isDrawing = true;
-                lastPoint = e.Location;
+                if (e.Button == MouseButtons.Left)
+                {
+                    isDrawing = true;
+                    lastPoint = e.Location;
+                }
+            } else
+            {
+                // lógica das primitivas
             }
         }
 
@@ -84,6 +91,30 @@ namespace paint_cg
             {
                 isDrawing = false;
             }
+        }
+
+        private void radioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton selected = sender as RadioButton;
+            if (selected.Checked)
+            {
+                foreach (Control c in panelSettings.Controls)
+                {
+                    if (c is GroupBox group)
+                    {
+                        foreach (Control r in group.Controls)
+                        {
+                            if (r is RadioButton rb && rb != selected)
+                                rb.Checked = false;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void checkBoxFreeDraw_CheckedChanged(object sender, EventArgs e)
+        {
+            freeDrawMode = checkBoxFreeDraw.Checked;
         }
     }
 }

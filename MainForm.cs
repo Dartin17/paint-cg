@@ -4,7 +4,8 @@ namespace paint_cg
     {
         bool isDrawing = false;
         bool freeDrawMode = false;
-        Point lastPoint;
+        bool firstClick = true;
+        Point lastPoint, p1, p2;
         Bitmap canvas;
         Graphics g;
 
@@ -43,7 +44,6 @@ namespace paint_cg
                         gNovo.DrawImageUnscaled(canvas, 0, 0);
                     }
 
-                    // libera recursos antigos
                     g?.Dispose();
                     canvas.Dispose();
 
@@ -52,8 +52,6 @@ namespace paint_cg
                     panelDraw.BackgroundImage = canvas;
                     panelDraw.Invalidate();
                 }
-
-
             }
         }
 
@@ -69,8 +67,28 @@ namespace paint_cg
                 }
             } else
             {
-                // lógica das primitivas
+                if (firstClick)
+                {
+                    p1 = e.Location;
+                    firstClick = false;
+                } else
+                {
+                    p2 = e.Location;
+                    firstClick = true;
+
+                    DrawPrimitive();
+                }
             }
+        }
+
+        private void DrawPrimitive()
+        {
+            if (radioButtonEqReta.Checked)
+            {
+                Primitives.LineEquation(canvas, p1, p2);
+            }
+
+            panelDraw.Invalidate();
         }
 
 

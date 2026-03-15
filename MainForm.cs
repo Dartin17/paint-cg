@@ -2,9 +2,11 @@ namespace paint_cg
 {
     public partial class MainForm : Form
     {
+        Bitmap previewCanvas;
         bool isDrawing = false;
         bool freeDrawMode = false;
-        bool firstClick = true;
+        bool isPreviewingPrimitive = false;
+
         Point lastPoint, p1, p2;
         Bitmap canvas;
         Graphics g;
@@ -58,47 +60,73 @@ namespace paint_cg
 
         private void panelDraw_MouseDown(object sender, MouseEventArgs e)
         {
-            if (freeDrawMode)
+            if (e.Button == MouseButtons.Left)
             {
-                if (e.Button == MouseButtons.Left)
+                if (freeDrawMode)
                 {
                     isDrawing = true;
                     lastPoint = e.Location;
                 }
-            } else
-            {
-                if (firstClick)
+                else
                 {
                     p1 = e.Location;
-                    firstClick = false;
-                } else
-                {
                     p2 = e.Location;
-                    firstClick = true;
-
-                    DrawPrimitive();
+                    isPreviewingPrimitive = true;
                 }
             }
         }
 
-        private void DrawPrimitive()
+        private void DrawPrimitive(Bitmap target, Color color)
         {
             if (radioButtonEqReta.Checked)
             {
-                Primitives.LineEquation(canvas, p1, p2);
+                Primitives.LineEquation(target, p1, p2, color);
             }
-
-            panelDraw.Invalidate();
+            else if (radioButtonDDA.Checked)
+            {
+                Primitives.LineDDA(target, p1, p2, color);
+            }
+            else if (radioButtonPontoMedioReta.Checked)
+            {
+                Primitives.LineMidpoint(target, p1, p2, color);
+            }
+            else if (radioButtonEqCircunferencia.Checked)
+            {
+                Primitives.CircleEquation(target, p1, p2, color);
+            }
+            else if (radioButtonTrigonometria.Checked)
+            {
+                Primitives.CircleTrigonometric(target, p1, p2, color);
+            }
+            else if (radioButtonPontoMedioCircunferencia.Checked)
+            {
+                Primitives.CircleMidpoint(target, p1, p2, color);
+            }
+            else if (radioButtonPontoMedioElipse.Checked)
+            {
+                Primitives.EllipseMidpoint(target, p1, p2, color);
+            }
         }
 
 
         private void panelDraw_MouseMove(object sender, MouseEventArgs e)
         {
-            if (isDrawing)
+            if (freeDrawMode)
             {
-                g.DrawLine(pen, lastPoint, e.Location);
-                lastPoint = e.Location;
-                panelDraw.Invalidate();
+                if (isDrawing)
+                {
+                    g.DrawLine(pen, lastPoint, e.Location);
+                    lastPoint = e.Location;
+                    panelDraw.Invalidate();
+                }
+            }
+            else
+            {
+                if (isPreviewingPrimitive)
+                {
+                    p2 = e.Location;
+                    panelDraw.Invalidate();
+                }
             }
         }
 
@@ -107,7 +135,28 @@ namespace paint_cg
         {
             if (e.Button == MouseButtons.Left)
             {
-                isDrawing = false;
+                if (freeDrawMode)
+                {
+                    isDrawing = false;
+                }
+                else
+                {
+                    if (isPreviewingPrimitive)
+                    {
+                        p2 = e.Location;
+                        isPreviewingPrimitive = false;
+
+                        DrawPrimitive(canvas, Color.Black);
+
+                        if (previewCanvas != null)
+                        {
+                            previewCanvas.Dispose();
+                            previewCanvas = null;
+                        }
+
+                        panelDraw.Invalidate();
+                    }
+                }
             }
         }
 
@@ -133,6 +182,22 @@ namespace paint_cg
         private void checkBoxFreeDraw_CheckedChanged(object sender, EventArgs e)
         {
             freeDrawMode = checkBoxFreeDraw.Checked;
+        }
+
+        private void panelDraw_Paint(object sender, PaintEventArgs e)
+        {
+            if (!freeDrawMode && isPreviewingPrimitive)
+            {
+                if (previewCanvas != null)
+                {
+                    previewCanvas.Dispose();
+                    previewCanvas = null;
+                }
+
+                previewCanvas = (Bitmap)canvas.Clone();
+                DrawPrimitive(previewCanvas, Color.Gray);
+                e.Graphics.DrawImageUnscaled(previewCanvas, 0, 0);
+            }
         }
     }
 }

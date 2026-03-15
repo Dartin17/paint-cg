@@ -56,6 +56,7 @@
             panelDraw.Size = new Size(1350, 729);
             panelDraw.TabIndex = 1;
             panelDraw.Tag = "";
+            panelDraw.Paint += panelDraw_Paint;
             panelDraw.MouseDown += panelDraw_MouseDown;
             panelDraw.MouseMove += panelDraw_MouseMove;
             panelDraw.MouseUp += panelDraw_MouseUp;
@@ -147,7 +148,7 @@
             radioButtonTrigonometria.AutoSize = true;
             radioButtonTrigonometria.Location = new Point(6, 40);
             radioButtonTrigonometria.Name = "radioButtonTrigonometria";
-            radioButtonTrigonometria.Size = new Size(99, 19);
+            radioButtonTrigonometria.Size = new Size(100, 19);
             radioButtonTrigonometria.TabIndex = 4;
             radioButtonTrigonometria.TabStop = true;
             radioButtonTrigonometria.Text = "Trigonometria";

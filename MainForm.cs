@@ -498,8 +498,15 @@ namespace paint_cg
 
                     if (polygon.FillColor != null && closePolygon)
                     {
-                        Point seed = GetPolygonCenter(polygon);
-                        FloodFill(canvas, seed, Color.White, polygon.FillColor.Value);
+                        if (radioButtonFloodFill.Checked)
+                        {
+                            Point seed = GetPolygonCenter(polygon);
+                            FloodFill(canvas, seed, Color.White, polygon.FillColor.Value);
+                        }
+                        else
+                        {
+                            ScanlineFill(canvas, polygon, polygon.FillColor.Value);
+                        }
                     }
                 }
             }
@@ -1155,6 +1162,83 @@ namespace paint_cg
             }
         }
 
+        private void ScanlineFill(Bitmap target, Polygon polygon, Color fillColor)
+        {
+            int n = polygon.Points.Count;
+            int yMinPolygon = polygon.Points.Min(p => p.Y);
+            int yMaxPolygon = polygon.Points.Max(p => p.Y);
+            Dictionary<int, List<EdgeEntry>> edgeTable = new Dictionary<int, List<EdgeEntry>>();
+
+            for (int i = 0; i < n; i++)
+            {
+                Point p1 = polygon.Points[i].ToPoint();
+                Point p2 = polygon.Points[(i + 1) % n].ToPoint();
+
+                if (p1.Y != p2.Y)
+                {
+                    if (p1.Y > p2.Y)
+                    {
+                        (p1, p2) = (p2, p1);
+                    }
+
+                    EdgeEntry entry = new EdgeEntry
+                    {
+                        YMax = p2.Y,
+                        X = p1.X,
+                        IncrementX = (double)(p2.X - p1.X) / (p2.Y - p1.Y)
+                    };
+
+                    if (!edgeTable.ContainsKey(p1.Y))
+                        edgeTable[p1.Y] = new List<EdgeEntry>();
+
+                    edgeTable[p1.Y].Add(entry);
+                }
+            }
+
+            List<EdgeEntry> aet = new List<EdgeEntry>();
+            Rectangle rect = new Rectangle(0, 0, target.Width, target.Height);
+            BitmapData bmpData = target.LockBits(rect, ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+            int stride = bmpData.Stride;
+            byte[] buffer = new byte[Math.Abs(stride) * target.Height];
+            Marshal.Copy(bmpData.Scan0, buffer, 0, buffer.Length);
+
+            void SetPixel(int x, int y)
+            {
+                if (x >= 0 && x < target.Width && y >= 0 && y < target.Height)
+                {
+                    int idx = y * stride + x * 3;
+                    buffer[idx] = fillColor.B;
+                    buffer[idx + 1] = fillColor.G;
+                    buffer[idx + 2] = fillColor.R;
+                }
+            }
+
+            for (int y = yMinPolygon; y <= yMaxPolygon; y++)
+            {
+                if (edgeTable.ContainsKey(y))
+                    aet.AddRange(edgeTable[y]);
+
+                aet.RemoveAll(e => e.YMax == y);
+
+                aet.Sort((a, b) => a.X.CompareTo(b.X));
+
+                for (int i = 0; i + 1 < aet.Count; i += 2)
+                {
+                    int xStart = (int)Math.Round(aet[i].X);
+                    int xEnd = (int)Math.Round(aet[i + 1].X);
+
+                    for (int x = xStart; x < xEnd; x++)
+                        SetPixel(x, y);
+                }
+
+                foreach (EdgeEntry edge in aet)
+                    edge.X += edge.IncrementX;
+            }
+
+            Marshal.Copy(buffer, 0, bmpData.Scan0, buffer.Length);
+            target.UnlockBits(bmpData);
+        }
+
         private void buttonPreencher_Click(object sender, EventArgs e)
         {
             if (selectedPolygon == null || selectedPolygon.Points.Count < 3)
@@ -1167,17 +1251,18 @@ namespace paint_cg
             }
             else
             {
+                Color fillColor = Color.Black;
+                selectedPolygon.FillColor = fillColor;
                 if (radioButtonFloodFill.Checked)
                 {
-                    Color fillColor = Color.Black;
-                    selectedPolygon.FillColor = fillColor;
                     Point seed = GetPolygonCenter(selectedPolygon);
                     FloodFill(canvas, seed, Color.White, fillColor);
                     panelDraw.Invalidate();
                 }
                 else
                 {
-
+                    ScanlineFill(canvas, selectedPolygon, fillColor);
+                    panelDraw.Invalidate();
                 }
             }
         }

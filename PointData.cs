@@ -1,16 +1,19 @@
 ﻿namespace paint_cg
 {
-    internal class PointData
+    public class PointData
     {
+        public string Name { get; set; } = "";
         public int X { get; set; }
         public int Y { get; set; }
 
-        public PointData() { }
-
-        public PointData(Point p)
+        public PointData()
         {
-            X = p.X;
-            Y = p.Y;
+        }
+
+        public PointData(Point point)
+        {
+            X = point.X;
+            Y = point.Y;
         }
 
         public Point ToPoint()

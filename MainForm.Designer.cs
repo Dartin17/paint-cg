@@ -63,6 +63,10 @@
             buttonTranslate = new Button();
             label2 = new Label();
             label1 = new Label();
+            groupBox7 = new GroupBox();
+            buttonPreencher = new Button();
+            radioButtonScanline = new RadioButton();
+            radioButtonFloodFill = new RadioButton();
             panelSettings = new Panel();
             buttonClearWindow = new Button();
             groupBoxApppMode = new GroupBox();
@@ -93,6 +97,7 @@
             ((System.ComponentModel.ISupportInitialize)numericScaleX).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericTranslateY).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericTranslateX).BeginInit();
+            groupBox7.SuspendLayout();
             panelSettings.SuspendLayout();
             groupBoxApppMode.SuspendLayout();
             flowLayoutPanelPrimitives.SuspendLayout();
@@ -122,9 +127,10 @@
             flowLayoutPanelPolygon.Controls.Add(groupBox4);
             flowLayoutPanelPolygon.Controls.Add(groupBox5);
             flowLayoutPanelPolygon.Controls.Add(groupBox6);
+            flowLayoutPanelPolygon.Controls.Add(groupBox7);
             flowLayoutPanelPolygon.Location = new Point(6, 5);
             flowLayoutPanelPolygon.Name = "flowLayoutPanelPolygon";
-            flowLayoutPanelPolygon.Size = new Size(1053, 146);
+            flowLayoutPanelPolygon.Size = new Size(1190, 146);
             flowLayoutPanelPolygon.TabIndex = 4;
             // 
             // groupBox3
@@ -476,6 +482,50 @@
             label1.TabIndex = 0;
             label1.Text = "Tx";
             // 
+            // groupBox7
+            // 
+            groupBox7.Controls.Add(buttonPreencher);
+            groupBox7.Controls.Add(radioButtonScanline);
+            groupBox7.Controls.Add(radioButtonFloodFill);
+            groupBox7.Location = new Point(1048, 3);
+            groupBox7.Name = "groupBox7";
+            groupBox7.Size = new Size(131, 137);
+            groupBox7.TabIndex = 6;
+            groupBox7.TabStop = false;
+            groupBox7.Text = "Preenchimento";
+            // 
+            // buttonPreencher
+            // 
+            buttonPreencher.Location = new Point(6, 91);
+            buttonPreencher.Name = "buttonPreencher";
+            buttonPreencher.Size = new Size(119, 23);
+            buttonPreencher.TabIndex = 2;
+            buttonPreencher.Text = "Preencher";
+            buttonPreencher.UseVisualStyleBackColor = true;
+            buttonPreencher.Click += buttonPreencher_Click;
+            // 
+            // radioButtonScanline
+            // 
+            radioButtonScanline.AutoSize = true;
+            radioButtonScanline.Location = new Point(6, 47);
+            radioButtonScanline.Name = "radioButtonScanline";
+            radioButtonScanline.Size = new Size(69, 19);
+            radioButtonScanline.TabIndex = 1;
+            radioButtonScanline.TabStop = true;
+            radioButtonScanline.Text = "Scanline";
+            radioButtonScanline.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonFloodFill
+            // 
+            radioButtonFloodFill.AutoSize = true;
+            radioButtonFloodFill.Location = new Point(6, 22);
+            radioButtonFloodFill.Name = "radioButtonFloodFill";
+            radioButtonFloodFill.Size = new Size(73, 19);
+            radioButtonFloodFill.TabIndex = 0;
+            radioButtonFloodFill.TabStop = true;
+            radioButtonFloodFill.Text = "Flood Fill";
+            radioButtonFloodFill.UseVisualStyleBackColor = true;
+            // 
             // panelSettings
             // 
             panelSettings.Controls.Add(buttonClearWindow);
@@ -490,9 +540,9 @@
             // 
             // buttonClearWindow
             // 
-            buttonClearWindow.Location = new Point(1109, 12);
+            buttonClearWindow.Location = new Point(1202, 128);
             buttonClearWindow.Name = "buttonClearWindow";
-            buttonClearWindow.Size = new Size(87, 23);
+            buttonClearWindow.Size = new Size(136, 23);
             buttonClearWindow.TabIndex = 5;
             buttonClearWindow.Text = "Limpar Tela";
             buttonClearWindow.UseVisualStyleBackColor = true;
@@ -504,7 +554,7 @@
             groupBoxApppMode.Controls.Add(radioButtonPrimitives);
             groupBoxApppMode.Location = new Point(1202, 12);
             groupBoxApppMode.Name = "groupBoxApppMode";
-            groupBoxApppMode.Size = new Size(136, 139);
+            groupBoxApppMode.Size = new Size(136, 110);
             groupBoxApppMode.TabIndex = 4;
             groupBoxApppMode.TabStop = false;
             groupBoxApppMode.Text = "Modo do Aplicativo";
@@ -697,6 +747,8 @@
             ((System.ComponentModel.ISupportInitialize)numericScaleX).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericTranslateY).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericTranslateX).EndInit();
+            groupBox7.ResumeLayout(false);
+            groupBox7.PerformLayout();
             panelSettings.ResumeLayout(false);
             groupBoxApppMode.ResumeLayout(false);
             groupBoxApppMode.PerformLayout();
@@ -765,5 +817,9 @@
         private ComboBox comboBoxScalePoint;
         private ComboBox comboBoxRotatePoint;
         private Label label8;
+        private GroupBox groupBox7;
+        private RadioButton radioButtonFloodFill;
+        private RadioButton radioButtonScanline;
+        private Button buttonPreencher;
     }
 }

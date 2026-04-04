@@ -12,6 +12,7 @@ namespace paint_cg
     {
         public string Name { get; set; } = "";
         public BindingList<PointData> Points { get; set; } = new BindingList<PointData>();
+        public Color? FillColor { get; set; } = null;
 
         public override string ToString()
         {

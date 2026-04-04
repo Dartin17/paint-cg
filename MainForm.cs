@@ -495,6 +495,12 @@ namespace paint_cg
                     bool closePolygon = polygon != currentPolygon || !isDrawingPolygon;
 
                     DrawPolygon(canvas, polygon, polygonColor, closePolygon);
+
+                    if (polygon.FillColor != null && closePolygon)
+                    {
+                        Point seed = GetPolygonCenter(polygon);
+                        FloodFill(canvas, seed, Color.White, polygon.FillColor.Value);
+                    }
                 }
             }
         }
@@ -1087,6 +1093,95 @@ namespace paint_cg
             }
         }
 
+        private void FloodFill(Bitmap target, Point seed, Color targetColor, Color fillColor)
+        {
+            int width = target.Width;
+            int height = target.Height;
+
+            if (seed.X >= 0 && seed.X < width && seed.Y >= 0 && seed.Y < height)
+            {
+                Rectangle rect = new Rectangle(0, 0, width, height);
+                BitmapData data = target.LockBits(rect, ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+                int stride = data.Stride;
+                byte[] buffer = new byte[Math.Abs(stride) * height];
+                Marshal.Copy(data.Scan0, buffer, 0, buffer.Length);
+
+                bool IsTarget(int x, int y)
+                {
+                    int idx = y * stride + x * 3;
+                    return buffer[idx] == targetColor.B &&
+                           buffer[idx + 1] == targetColor.G &&
+                           buffer[idx + 2] == targetColor.R;
+                }
+
+                void SetFill(int x, int y)
+                {
+                    int idx = y * stride + x * 3;
+                    buffer[idx] = fillColor.B;
+                    buffer[idx + 1] = fillColor.G;
+                    buffer[idx + 2] = fillColor.R;
+                }
+
+                if (IsTarget(seed.X, seed.Y))
+                {
+                    Stack<Point> stack = new Stack<Point>();
+                    stack.Push(seed);
+
+                    while (stack.Count > 0)
+                    {
+                        Point p = stack.Pop();
+                        int x = p.X, y = p.Y;
+
+                        if (x >= 0 && x < width && y >= 0 && y < height)
+                        {
+                            if (IsTarget(x, y))
+                            {
+                                SetFill(x, y);
+                                stack.Push(new Point(x + 1, y));
+                                stack.Push(new Point(x - 1, y));
+                                stack.Push(new Point(x, y + 1));
+                                stack.Push(new Point(x, y - 1));
+                            }
+                        }
+                    }
+
+                    Marshal.Copy(buffer, 0, data.Scan0, buffer.Length);
+                    target.UnlockBits(data);
+                }
+                else
+                {
+                    target.UnlockBits(data);
+                }
+            }
+        }
+
+        private void buttonPreencher_Click(object sender, EventArgs e)
+        {
+            if (selectedPolygon == null || selectedPolygon.Points.Count < 3)
+            {
+                MessageBox.Show("Selecione um polígono fechado.");
+            }
+            else if (isDrawingPolygon)
+            {
+                MessageBox.Show("Feche o polígono antes de preencher.");
+            }
+            else
+            {
+                if (radioButtonFloodFill.Checked)
+                {
+                    Color fillColor = Color.Black;
+                    selectedPolygon.FillColor = fillColor;
+                    Point seed = GetPolygonCenter(selectedPolygon);
+                    FloodFill(canvas, seed, Color.White, fillColor);
+                    panelDraw.Invalidate();
+                }
+                else
+                {
+
+                }
+            }
+        }
+
         // ================== Limpar tela =========================
 
         private void buttonClearWindow_Click(object sender, EventArgs e)
@@ -1115,6 +1210,5 @@ namespace paint_cg
             panelDraw.Invalidate();
         }
 
-  
     }
 }

@@ -266,6 +266,7 @@
             // 
             // numericShearY
             // 
+            numericShearY.DecimalPlaces = 2;
             numericShearY.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
             numericShearY.Location = new Point(328, 108);
             numericShearY.Maximum = new decimal(new int[] { 2, 0, 0, 0 });
@@ -276,6 +277,7 @@
             // 
             // numericShearX
             // 
+            numericShearX.DecimalPlaces = 2;
             numericShearX.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
             numericShearX.Location = new Point(102, 108);
             numericShearX.Maximum = new decimal(new int[] { 2, 0, 0, 0 });
@@ -315,10 +317,11 @@
             numericScaleY.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
             numericScaleY.Location = new Point(107, 48);
             numericScaleY.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
-            numericScaleY.Minimum = new decimal(new int[] { 10, 0, 0, int.MinValue });
+            numericScaleY.Minimum = new decimal(new int[] { 1, 0, 0, 65536 });
             numericScaleY.Name = "numericScaleY";
             numericScaleY.Size = new Size(46, 23);
             numericScaleY.TabIndex = 24;
+            numericScaleY.Value = new decimal(new int[] { 1, 0, 0, 65536 });
             // 
             // numericScaleX
             // 
@@ -326,10 +329,11 @@
             numericScaleX.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
             numericScaleX.Location = new Point(30, 48);
             numericScaleX.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
-            numericScaleX.Minimum = new decimal(new int[] { 10, 0, 0, int.MinValue });
+            numericScaleX.Minimum = new decimal(new int[] { 1, 0, 0, 65536 });
             numericScaleX.Name = "numericScaleX";
             numericScaleX.Size = new Size(46, 23);
             numericScaleX.TabIndex = 23;
+            numericScaleX.Value = new decimal(new int[] { 1, 0, 0, 65536 });
             // 
             // numericTranslateY
             // 

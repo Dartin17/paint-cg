@@ -77,6 +77,9 @@ namespace paint_cg
         {
             dataGridViewPoints.AutoGenerateColumns = true;
             dataGridViewPoints.ReadOnly = true;
+            dataGridViewPoints.RowHeadersVisible = false;
+            dataGridViewPoints.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
             dataGridViewPoints.DataSource = pointList;
 
             listBoxPolygons.DataSource = polygonList;
@@ -119,11 +122,19 @@ namespace paint_cg
             panelDraw.Invalidate();
         }
 
-        private void UpdatePointsGrid(BindingList<PointData> points)
+        private void UpdatePointsGrid(Polygon polygon)
         {
-            pointList = points;
-            dataGridViewPoints.DataSource = null;
-            dataGridViewPoints.DataSource = pointList;
+            if (polygon != null)
+            {
+                //atualiza os nomes
+                for (int i = 0; i < polygon.Points.Count; i++)
+                    polygon.Points[i].Nome = $"{GetPolygonLabelFromName(polygon.Name)}{i + 1}";
+                
+                //atualiza pontos
+                pointList = polygon.Points;
+                dataGridViewPoints.DataSource = null;
+                dataGridViewPoints.DataSource = pointList;
+            }
         }
 
         private void ClearPreviewCanvas()
@@ -430,7 +441,7 @@ namespace paint_cg
             if (isDrawingPolygon && currentPolygon != null)
             {
                 currentPolygon.Points.Add(new PointData(e.Location));
-                UpdatePointsGrid(currentPolygon.Points);
+                UpdatePointsGrid(currentPolygon);
                 RefreshTransformationReferencePoints();
 
                 RedrawCanvas();
@@ -550,7 +561,7 @@ namespace paint_cg
                     isDrawingPolygon = true;
 
                     listBoxPolygons.SelectedItem = currentPolygon;
-                    UpdatePointsGrid(currentPolygon.Points);
+                    UpdatePointsGrid(currentPolygon);
                     RefreshTransformationReferencePoints();
 
                     RedrawCanvas();
@@ -598,7 +609,7 @@ namespace paint_cg
                     polygonList.Remove(polygon);
                     selectedPolygon = null;
 
-                    UpdatePointsGrid(new BindingList<PointData>());
+                    UpdatePointsGrid(new Polygon());
                     comboBoxScalePoint.Items.Clear();
                     comboBoxRotatePoint.Items.Clear();
 
@@ -621,7 +632,7 @@ namespace paint_cg
                 if (listBoxPolygons.SelectedItem is Polygon polygon)
                 {
                     selectedPolygon = polygon;
-                    UpdatePointsGrid(polygon.Points);
+                    UpdatePointsGrid(polygon);
                     RefreshTransformationReferencePoints();
 
                     RedrawCanvas();
@@ -932,7 +943,7 @@ namespace paint_cg
                     selectedPolygon.Points[i].Y = transformedPoint.Y;
                 }
 
-                UpdatePointsGrid(selectedPolygon.Points);
+                UpdatePointsGrid(selectedPolygon);
                 RefreshTransformationReferencePoints();
                 ClearPreviewCanvas();
                 RedrawCanvas();
@@ -1279,7 +1290,7 @@ namespace paint_cg
             selectedPolygon = null;
 
             polygonList.Clear();
-            UpdatePointsGrid(new BindingList<PointData>());
+            UpdatePointsGrid(new Polygon());
 
             polygonCounter = 0;
             comboBoxScalePoint.Items.Clear();

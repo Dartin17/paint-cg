@@ -2,7 +2,7 @@
 {
     public class PointData
     {
-        public string Name { get; set; } = "";
+        public string Nome { get; set; } = "";
         public int X { get; set; }
         public int Y { get; set; }
 

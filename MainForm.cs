@@ -2,6 +2,13 @@ using System.ComponentModel;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
+/*
+ * Desenvolvido por:
+ * Eduardo Pereira de Almeida - 102317143
+ * Evandro Taroco de Carvalho - 102316503
+ * Matheus Chizollini Monteiro - 102317151 
+ */
+
 namespace paint_cg
 {
     public partial class MainForm : Form
